@@ -65,7 +65,7 @@ static struct pcm_config pcm_config_tfa98xx = {
 
 static int amp_set_feedback(amplifier_device_t* device, void* adev, uint32_t snd_device,
                             bool enable) {
-    if (!device) return 0;
+    if (!device || !tfa_dev) return 0;
 
     tfa_dev->adev = (struct audio_device*)adev;
     int pcm_dev_tx_id = 0, rc = 0;
@@ -129,13 +129,23 @@ disable:
         pcm_close(tfa_dev->tfa98xx_out);
         tfa_dev->tfa98xx_out = NULL;
     }
-    tfa_dev->usecase_tx = tfa_dev->get_usecase_from_list(tfa_dev->adev, tfa_dev->usecase_tx->id);
+    /*
+     * Do not dereference usecase_tx to get the id here. This path is reached
+     * with a NULL usecase_tx whenever set_feedback(enable=false) arrives
+     * without a preceding enable -- disable_snd_device() calls it on any
+     * speaker teardown -- and with a dangling one after a previous disable,
+     * which freed it without clearing the pointer. The id is a constant, so
+     * look the usecase up by that instead.
+     */
+    tfa_dev->usecase_tx =
+            tfa_dev->get_usecase_from_list(tfa_dev->adev, USECASE_AUDIO_SPKR_CALIB_TX);
     if (tfa_dev->usecase_tx) {
         ALOGD("%s: Disabling tfa98xx feedback", __func__);
         list_remove(&tfa_dev->usecase_tx->list);
         tfa_dev->disable_snd_device(tfa_dev->adev, tfa_dev->usecase_tx->in_snd_device);
         tfa_dev->disable_audio_route(tfa_dev->adev, tfa_dev->usecase_tx);
         free(tfa_dev->usecase_tx);
+        tfa_dev->usecase_tx = NULL;
     }
     return rc;
 }
