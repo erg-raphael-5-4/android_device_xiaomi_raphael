@@ -85,9 +85,16 @@ $(call inherit-product, vendor/xiaomi/raphael/raphael-vendor.mk)
 # MIUI Camera (device/xiaomi/miuicamera + vendor/xiaomi/miuicamera)
 $(call inherit-product-if-exists, device/xiaomi/miuicamera/device.mk)
 
-# Screen-off fingerprint unlock. sensors.udfps (hardware/xiaomi/sensors) turns
-# the touch driver's /sys/touchpanel/fp_state into the wake-up
-# org.lineageos.sensor.udfps sensor that SystemUI's doze path listens to; it is
-# loaded through vendor/etc/sensors/hals.conf next to sensors.ssc.
+# Sensor based screen-off gestures (hardware/xiaomi/sensors/v1), loaded through
+# vendor/etc/sensors/hals.conf next to sensors.ssc:
+# - sensors.udfps: org.lineageos.sensor.udfps, screen-off fingerprint unlock
+# - sensors.single_tap: org.lineageos.sensor.single_tap, doze tap pulse
+# - sensors.double_tap: org.lineageos.sensor.double_tap, double tap to wake
+# They read the touch driver's goodix_ts.0 *_pressed nodes and arm the IC
+# gesture modes through *_enabled only while SystemUI listens (6.1 kernel);
+# on msm-5.4 sensors.udfps falls back to /sys/touchpanel/fp_state and the tap
+# sensors are not listed.
 PRODUCT_PACKAGES += \
-    sensors.udfps
+    sensors.udfps \
+    sensors.single_tap \
+    sensors.double_tap
