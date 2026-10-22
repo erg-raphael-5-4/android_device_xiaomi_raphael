@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Xiaomi's AOD light sensor reports 4 in bright light and 3 or 5 in the
+         dark. The kernel switches the panel to doze-hbm above 1/32 of the
+         maximum backlight level and to doze-lbm below it. -->
+    <string name="doze_brightness_sensor_type" translatable="false">xiaomi.sensor.aod</string>
+
+    <integer-array name="config_doze_brightness_sensor_to_brightness">
+        <item>-1</item> <!-- 0 -->
+        <item>-1</item> <!-- 1 -->
+        <item>-1</item> <!-- 2 -->
+        <item>1</item>  <!-- 3: dark, doze-lbm -->
+        <item>100</item> <!-- 4: bright, doze-hbm -->
+        <item>1</item>  <!-- 5: dark, doze-lbm -->
+    </integer-array>
+
+    <integer-array name="config_doze_brightness_sensor_to_scrim_opacity">
+        <item>-1</item>
+        <item>-1</item>
+        <item>-1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+</resources>

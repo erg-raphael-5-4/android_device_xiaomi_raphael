@@ -15,3 +15,9 @@ ro.vendor.camera.hfr.batch_video_buffers=false
 persist.vendor.fingerprint.sensor_location=540|2026|95
 persist.vendor.fingerprint.type=udfps_optical
 persist.vendor.fingerprint.udfps.control_illumination=true
+
+# Display
+# The sm8150 HWC only enables doze for modes with msm-5.4's
+# DRM_MODE_FLAG_CMD_MODE_PANEL bit; the 6.12 kernel reports the panel mode
+# through panel_mode_caps instead, so force doze support for this cmd panel.
+vendor.display.override_doze_mode=1
