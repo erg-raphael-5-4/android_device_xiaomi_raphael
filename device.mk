@@ -99,3 +99,9 @@ PRODUCT_PACKAGES += \
     sensors.udfps \
     sensors.single_tap \
     sensors.double_tap
+
+# Enable Hint manager for SurfaceFlinger and HWUI
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    debug.hwui.use_hint_manager=true \
+    debug.sf.enable_adpf_cpu_hint=true \
+    debug.sf.enable_adpf_gpu_hint=true
